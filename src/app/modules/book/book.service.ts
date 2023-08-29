@@ -1,3 +1,5 @@
+import httpStatus from 'http-status';
+import ApiError from '../../../errors/ApiErrors';
 import { bookSearchableFields } from './book.constant';
 import { IBook, IBookFilters } from './book.interface';
 import Book from './book.model';
@@ -52,8 +54,30 @@ const getSingleBook = async (id: string): Promise<IBook | null> => {
   return await Book.findById(id).populate('reviews.user').exec();
 };
 
+const updateSingleBook = async (
+  id: string,
+  payload: Partial<IBook>
+): Promise<IBook | null> => {
+  const isExist = await Book.findById(id);
+
+  if (!isExist) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Book not found !');
+  }
+
+  const { ...bookData } = payload;
+
+  const updatedBookData: Partial<IBook> = { ...bookData };
+
+  const result = await Book.findByIdAndUpdate(id, updatedBookData, {
+    new: true,
+  });
+
+  return result;
+};
+
 export const BookService = {
   createBook,
   getAllBooks,
   getSingleBook,
+  updateSingleBook,
 };
