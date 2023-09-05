@@ -14,6 +14,7 @@ router.get('/', BookController.getAllBooks);
 
 router.get('/:id', BookController.getSingleBook);
 router.patch('/:id', BookController.updateSingleBook);
+router.delete('/:id', BookController.deleteSingleBook);
 
 router.route('/:id/review').post(BookController.updateSingleBookReview);
 

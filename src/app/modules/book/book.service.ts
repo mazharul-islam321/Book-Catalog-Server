@@ -65,9 +65,7 @@ const updateSingleBook = async (
   }
 
   const { ...bookData } = payload;
-
   const updatedBookData: Partial<IBook> = { ...bookData };
-
   const result = await Book.findByIdAndUpdate(id, updatedBookData, {
     new: true,
   });
@@ -84,9 +82,7 @@ const updateSingleBookReview = async (
   if (!isExist) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Book not found !');
   }
-
   const { user, comment } = payload;
-
   const result = await Book.findByIdAndUpdate(
     id,
     { $push: { reviews: { user, comment } } },
@@ -96,10 +92,15 @@ const updateSingleBookReview = async (
   return result;
 };
 
+const deleteSingleBook = async (id: string): Promise<IBook | null> => {
+  return await Book.findByIdAndDelete(id);
+};
+
 export const BookService = {
   createBook,
   getAllBooks,
   getSingleBook,
   updateSingleBook,
   updateSingleBookReview,
+  deleteSingleBook,
 };
