@@ -1,7 +1,7 @@
 import httpStatus from 'http-status';
 import ApiError from '../../../errors/ApiErrors';
 import { bookSearchableFields } from './book.constant';
-import { IBook, IBookFilters } from './book.interface';
+import { IBook, IBookFilters, IReview } from './book.interface';
 import Book from './book.model';
 
 const createBook = async (book: IBook): Promise<IBook | null> => {
@@ -75,9 +75,31 @@ const updateSingleBook = async (
   return result;
 };
 
+const updateSingleBookReview = async (
+  id: string,
+  payload: IReview
+): Promise<IBook | null> => {
+  const isExist = await Book.findById(id);
+
+  if (!isExist) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Book not found !');
+  }
+
+  const { user, comment } = payload;
+
+  const result = await Book.findByIdAndUpdate(
+    id,
+    { $push: { reviews: { user, comment } } },
+    { new: true }
+  );
+
+  return result;
+};
+
 export const BookService = {
   createBook,
   getAllBooks,
   getSingleBook,
   updateSingleBook,
+  updateSingleBookReview,
 };

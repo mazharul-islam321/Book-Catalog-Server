@@ -15,4 +15,6 @@ router.get('/', BookController.getAllBooks);
 router.get('/:id', BookController.getSingleBook);
 router.patch('/:id', BookController.updateSingleBook);
 
+router.route('/:id/review').post(BookController.updateSingleBookReview);
+
 export const BookRoutes = router;
